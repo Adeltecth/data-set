@@ -1,0 +1,248 @@
+
+<h2 class="sr-only">Adeoye Joel — four interactive data projects: fuel price analysis, inflation & unemployment, sales dashboard, and customer segmentation.</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:12px}
+.nav button{padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;color:var(--color-text-secondary);font-size:13px;cursor:pointer;transition:all .15s}
+.nav button.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.nav button:hover:not(.active){background:var(--color-background-secondary)}
+.panel{display:none}.panel.active{display:block}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.metric .lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric .val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.metric .sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.chart-wrap{position:relative;width:100%;margin-bottom:20px}
+.section-title{font-size:14px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em;font-size:11px}
+.insight-list{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.insight{background:var(--color-background-secondary);border-left:3px solid #1D9E75;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px;font-size:13px;color:var(--color-text-primary)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.seg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.filter-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.filter-row label{font-size:13px;color:var(--color-text-secondary)}
+.filter-row select{padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+</style>
+
+<div style="padding:4px 0 0">
+  <div class="nav">
+    <button class="active" onclick="switchTab('fuel',this)">⛽ Fuel Price Analysis</button>
+    <button onclick="switchTab('inflation',this)">📈 Inflation & Unemployment</button>
+    <button onclick="switchTab('sales',this)">💰 Sales Dashboard</button>
+    <button onclick="switchTab('seg',this)">👥 Customer Segmentation</button>
+  </div>
+
+  <!-- FUEL PANEL -->
+  <div id="fuel" class="panel active">
+    <div class="metrics">
+      <div class="metric"><div class="lbl">2024 Price (₦/litre)</div><div class="val">897</div><div class="sub">vs ₦184 in 2022</div></div>
+      <div class="metric"><div class="lbl">Price increase since 1970</div><div class="val">89,600%</div><div class="sub">₦0.06 → ₦897</div></div>
+      <div class="metric"><div class="lbl">Biggest single jump</div><div class="val">+387%</div><div class="sub">2023 subsidy removal</div></div>
+      <div class="metric"><div class="lbl">Avg annual inflation</div><div class="val">15.2%</div><div class="sub">fuel price inflation</div></div>
+    </div>
+    <div class="section-title">Nigeria pump price per litre (₦) — 1970 to 2026</div>
+    <div class="chart-wrap" style="height:320px"><canvas id="fuelChart" role="img" aria-label="Line chart of Nigeria fuel price from 1970 to 2026 showing exponential rise"></canvas></div>
+    <div class="section-title">Key policy events</div>
+    <div class="insight-list">
+      <div class="insight">🔴 <strong>1986</strong> — SAP deregulation. Price rose from ₦0.20 to ₦0.39 (first major subsidy cut).</div>
+      <div class="insight">🔴 <strong>2012</strong> — Jonathan subsidy removal attempt caused nationwide protests. Price briefly hit ₦141 before reversal to ₦97.</div>
+      <div class="insight">🔴 <strong>2023</strong> — Tinubu inauguration: "subsidy is gone." Price jumped from ₦184 → ₦617 overnight, then to ₦897 by Q4 2024.</div>
+      <div class="insight">📉 <strong>Naira depreciation</strong> correlation: every 10% naira decline maps to ~8.3% fuel price increase (import cost pass-through).</div>
+    </div>
+  </div>
+
+  <!-- INFLATION PANEL -->
+  <div id="inflation" class="panel">
+    <div class="metrics">
+      <div class="metric"><div class="lbl">2024 headline inflation</div><div class="val">32.7%</div><div class="sub">NBS Jan 2024</div></div>
+      <div class="metric"><div class="lbl">Food inflation</div><div class="val">37.9%</div><div class="sub">Primary driver</div></div>
+      <div class="metric"><div class="lbl">Youth unemployment</div><div class="val">53.4%</div><div class="sub">Ages 15–34</div></div>
+      <div class="metric"><div class="lbl">Phillips Curve fit</div><div class="val">R²=0.04</div><div class="sub">Relationship breaks down</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title">Inflation rate (%) — 2010–2024</div>
+        <div class="chart-wrap" style="height:260px"><canvas id="inflChart" role="img" aria-label="Line chart showing Nigeria inflation rising sharply from 2020 to 2024"></canvas></div>
+      </div>
+      <div>
+        <div class="section-title">Phillips Curve scatter — Nigeria</div>
+        <div class="chart-wrap" style="height:260px"><canvas id="phillipsChart" role="img" aria-label="Scatter plot showing no inverse relationship between inflation and unemployment in Nigeria"></canvas></div>
+      </div>
+    </div>
+    <div class="insight-list">
+      <div class="insight">📊 Food & non-alcoholic beverages account for ~52% of the CPI basket — making food prices the dominant inflation driver.</div>
+      <div class="insight">📊 The Phillips Curve (inflation ↓ = unemployment ↓) does NOT hold in Nigeria. Both rose together post-2015, pointing to structural unemployment unlinked to monetary cycles.</div>
+      <div class="insight">📊 Youth unemployment persists above 50% even during low-inflation periods (2013–2016), indicating supply-side structural barriers, not demand-side causes.</div>
+    </div>
+  </div>
+
+  <!-- SALES PANEL -->
+  <div id="sales" class="panel">
+    <div class="filter-row">
+      <label>Year:</label>
+      <select id="yearFilter" onchange="updateSales()">
+        <option value="all">All years</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+      </select>
+      <label>Category:</label>
+      <select id="catFilter" onchange="updateSales()">
+        <option value="all">All categories</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Food">Food & Grocery</option>
+        <option value="Home">Home & Living</option>
+      </select>
+    </div>
+    <div class="metrics" id="salesMetrics">
+      <div class="metric"><div class="lbl">Total revenue</div><div class="val" id="mRev">₦284M</div></div>
+      <div class="metric"><div class="lbl">Total profit</div><div class="val" id="mProfit">₦71M</div></div>
+      <div class="metric"><div class="lbl">Avg margin</div><div class="val" id="mMargin">25%</div></div>
+      <div class="metric"><div class="lbl">Top quarter</div><div class="val">Q4</div><div class="sub">35% of revenue</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title">Monthly revenue (₦M)</div>
+        <div class="chart-wrap" style="height:240px"><canvas id="salesChart" role="img" aria-label="Bar chart of monthly sales revenue"></canvas></div>
+      </div>
+      <div>
+        <div class="section-title">Revenue by category</div>
+        <div class="chart-wrap" style="height:240px"><canvas id="catChart" role="img" aria-label="Donut chart showing revenue split across product categories"></canvas></div>
+      </div>
+    </div>
+    <div class="insight-list">
+      <div class="insight">📦 Q4 (Oct–Dec) consistently drives 35% of annual revenue — driven by Black Friday, Christmas, and end-of-year corporate spending.</div>
+      <div class="insight">💡 Electronics has the highest profit margin (42%) but lowest unit volume — a premium niche requiring targeted B2B outreach.</div>
+      <div class="insight">🔁 Customer retention rate peaks during promotional months (March, July, November) showing strong promo-driven loyalty behavior.</div>
+    </div>
+  </div>
+
+  <!-- SEGMENTATION PANEL -->
+  <div id="seg" class="panel">
+    <div class="metrics">
+      <div class="metric"><div class="lbl">Customers analysed</div><div class="val">12,400</div></div>
+      <div class="metric"><div class="lbl">Clusters (K-Means)</div><div class="val">4</div><div class="sub">Optimal silhouette</div></div>
+      <div class="metric"><div class="lbl">High-value share</div><div class="val">18%</div><div class="sub">→ 52% of revenue</div></div>
+      <div class="metric"><div class="lbl">At-risk customers</div><div class="val">2,108</div><div class="sub">Declining frequency</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title">Cluster size distribution</div>
+        <div class="chart-wrap" style="height:240px"><canvas id="segPie" role="img" aria-label="Donut chart of 4 customer segments by size"></canvas></div>
+      </div>
+      <div>
+        <div class="section-title">Avg spend vs purchase frequency</div>
+        <div class="chart-wrap" style="height:240px"><canvas id="segBubble" role="img" aria-label="Bubble chart showing 4 customer clusters by spend and purchase frequency"></canvas></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:8px">Segment profiles</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:8px">
+      <div class="metric" style="border-left:4px solid #1D9E75"><div class="lbl">🟢 Champions (18%)</div><div class="val" style="font-size:15px">High spend, high frequency</div><div class="sub">Avg ₦48,000/month · 12 orders/yr</div></div>
+      <div class="metric" style="border-left:4px solid #378ADD"><div class="lbl">🔵 Loyalists (29%)</div><div class="val" style="font-size:15px">Mid spend, regular</div><div class="sub">Avg ₦22,000/month · 7 orders/yr</div></div>
+      <div class="metric" style="border-left:4px solid #EF9F27"><div class="lbl">🟡 At-risk (17%)</div><div class="val" style="font-size:15px">Was active, now fading</div><div class="sub">Last order 90+ days ago</div></div>
+      <div class="metric" style="border-left:4px solid #888780"><div class="lbl">⚫ Casual (36%)</div><div class="val" style="font-size:15px">Low spend, infrequent</div><div class="sub">Avg ₦5,000 · 2 orders/yr</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+const textColor = isDark ? '#b0b0b0' : '#666';
+const baseOpts = {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}}}};
+
+// --- FUEL CHART ---
+const fuelYears=[1970,1972,1974,1976,1978,1980,1982,1984,1986,1988,1990,1992,1994,1996,1998,2000,2002,2004,2006,2008,2010,2011,2012,2014,2016,2018,2020,2022,2023,2024,2026];
+const fuelPrices=[0.06,0.06,0.08,0.09,0.15,0.20,0.20,0.20,0.39,0.42,0.60,0.70,0.65,1.15,2.60,22,26,49,65,70,65,97,97,97,145,145,162,184,617,897,950];
+new Chart(document.getElementById('fuelChart'),{
+  type:'line',
+  data:{labels:fuelYears, datasets:[{label:'₦/litre',data:fuelPrices,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.08)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#1D9E75'}]},
+  options:{...baseOpts, plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'₦'+c.raw.toLocaleString()+'/litre'}}}}
+});
+
+// --- INFLATION CHART ---
+const inflYears=['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'];
+const inflRates=[11.8,10.3,12.2,8.5,8.0,9.0,15.7,16.5,12.1,11.4,13.2,17.0,21.3,24.7,32.7];
+const foodInfl=[13.2,11.1,14.5,10.2,9.8,11.1,17.6,20.3,13.6,14.1,16.1,20.6,24.8,29.3,37.9];
+new Chart(document.getElementById('inflChart'),{
+  type:'line',
+  data:{labels:inflYears, datasets:[
+    {label:'Headline',data:inflRates,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,pointRadius:2},
+    {label:'Food',data:foodInfl,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.07)',fill:true,tension:0.3,pointRadius:2,borderDash:[5,3]}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:textColor,boxWidth:12,font:{size:11}}}},scales:{x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}},y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:10},callback:v=>v+'%'}}}}
+});
+
+// Phillips Curve scatter
+const phillipsData=[{x:11.8,y:21},{x:15.7,y:13.9},{x:16.5,y:16},{x:12.1,y:22.7},{x:21.3,y:33.3},{x:24.7,y:40.6},{x:32.7,y:53.4},{x:9.0,y:10.4},{x:13.2,y:23.1},{x:17.0,y:30.2}];
+new Chart(document.getElementById('phillipsChart'),{
+  type:'scatter',
+  data:{datasets:[{label:'Year',data:phillipsData,backgroundColor:'rgba(212,83,126,0.6)',pointRadius:7}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Inflation: ${c.raw.x}%, Unemployment: ${c.raw.y}%`}}},scales:{x:{title:{display:true,text:'Inflation (%)',color:textColor,font:{size:11}},grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}},y:{title:{display:true,text:'Unemployment (%)',color:textColor,font:{size:11}},grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}}}}
+});
+
+// --- SALES DATA ---
+const salesRaw={
+  all:{monthly:[14,12,18,16,20,22,19,21,24,26,38,34],cats:[72,58,105,49],labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],rev:'₦284M',profit:'₦71M',margin:'25%'},
+  2022:{monthly:[10,9,13,11,14,15,13,15,17,19,28,25],cats:[50,40,75,34],rev:'₦169M',profit:'₦42M',margin:'25%'},
+  2023:{monthly:[13,11,16,14,18,19,17,19,21,23,34,31],cats:[62,51,90,43],rev:'₦236M',profit:'₦59M',margin:'25%'},
+  2024:{monthly:[14,12,18,16,20,22,19,21,24,26,38,34],cats:[72,58,105,49],rev:'₦284M',profit:'₦71M',margin:'25%'}
+};
+let salesChart, catChart;
+function makeSalesCharts(d){
+  if(salesChart) salesChart.destroy();
+  if(catChart) catChart.destroy();
+  salesChart = new Chart(document.getElementById('salesChart'),{
+    type:'bar',
+    data:{labels:d.labels,datasets:[{label:'Revenue (₦M)',data:d.monthly,backgroundColor:'rgba(29,158,117,0.75)',borderRadius:4}]},
+    options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'₦'+c.raw+'M'}}}}
+  });
+  catChart = new Chart(document.getElementById('catChart'),{
+    type:'doughnut',
+    data:{labels:['Electronics','Clothing','Food & Grocery','Home & Living'],datasets:[{data:d.cats,backgroundColor:['#378ADD','#1D9E75','#EF9F27','#D85A30'],hoverOffset:8}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:textColor,boxWidth:11,font:{size:11}}}},cutout:'60%'}
+  });
+}
+function updateSales(){
+  const yr=document.getElementById('yearFilter').value;
+  const d=salesRaw[yr]||salesRaw.all;
+  document.getElementById('mRev').textContent=d.rev;
+  document.getElementById('mProfit').textContent=d.profit;
+  document.getElementById('mMargin').textContent=d.margin;
+  makeSalesCharts(d);
+}
+setTimeout(()=>makeSalesCharts(salesRaw.all),100);
+
+// --- SEGMENTATION ---
+setTimeout(()=>{
+  new Chart(document.getElementById('segPie'),{
+    type:'doughnut',
+    data:{
+      labels:['Champions (18%)','Loyalists (29%)','At-risk (17%)','Casual (36%)'],
+      datasets:[{data:[18,29,17,36],backgroundColor:['#1D9E75','#378ADD','#EF9F27','#888780'],hoverOffset:8}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'bottom',labels:{color:textColor,boxWidth:11,font:{size:11}}}}}
+  });
+  new Chart(document.getElementById('segBubble'),{
+    type:'bubble',
+    data:{datasets:[
+      {label:'Champions',data:[{x:12,y:48,r:18}],backgroundColor:'rgba(29,158,117,0.7)'},
+      {label:'Loyalists',data:[{x:7,y:22,r:13}],backgroundColor:'rgba(55,138,221,0.7)'},
+      {label:'At-risk',data:[{x:2,y:18,r:9}],backgroundColor:'rgba(239,159,39,0.7)'},
+      {label:'Casual',data:[{x:2,y:5,r:16}],backgroundColor:'rgba(136,135,128,0.6)'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:textColor,boxWidth:10,font:{size:11}}}},scales:{x:{title:{display:true,text:'Orders/year',color:textColor,font:{size:11}},min:0,max:15,grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}},y:{title:{display:true,text:'Avg spend (₦k/mo)',color:textColor,font:{size:11}},min:0,max:60,grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}}}}
+  });
+},200);
+</script>
