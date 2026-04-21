@@ -53,7 +53,7 @@ const HeroSection = () => {
                 Contact Me
               </a>
               <a
-                href="/Adeoye_Joel_Data_Analyst.docx"
+                href="/Adeoye_Joel_Data_Analyst_CV.docx"
                 target="_blank"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/80 transition-colors"
               >
