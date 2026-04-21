@@ -107,7 +107,7 @@ const ContactSection = () => {
                 Currently seeking data analyst roles — remote or on-site in Nigeria.
               </p>
               <a
-                href="/Adeoye_Joel_CV.pdf"
+                href="/Adeoye_Joel_Data_Analyst_CV.docx"
                 target="_blank"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
               >
